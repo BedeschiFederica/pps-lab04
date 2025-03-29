@@ -1,6 +1,7 @@
 package tasks.adts
 import u03.extensionmethods.Optionals.*
 import u03.extensionmethods.Sequences.*
+import Sequence.*
 
 /*  Exercise 2: 
  *  Implement the below trait, and write a meaningful test.
@@ -111,18 +112,28 @@ object SchoolModel:
        */
       def hasCourse(name: String): Boolean
   object BasicSchoolModule extends SchoolModule:
-    override type School = Nothing
-    override type Teacher = Nothing
-    override type Course = Nothing
+    private case class SchoolImpl(teacherInfos: Sequence[TeacherInfo])
+    private case class TeacherInfo(name: String, course: Sequence[Course])
+    opaque override type School = SchoolImpl
+    opaque override type Teacher = String
+    opaque override type Course = String
 
-    def teacher(name: String): Teacher = ???
-    def course(name: String): Course = ???
-    def emptySchool: School = ???
+    def teacher(name: String): Teacher = name
+    def course(name: String): Course = name
+    def emptySchool: School = SchoolImpl(nil())
 
     extension (school: School)
-      def courses: Sequence[String] = ???
+      def courses: Sequence[String] = school match
+        case SchoolImpl(s) => s.flatMap(_ match {case TeacherInfo(_, c) => c})
       def teachers: Sequence[String] = ???
-      def setTeacherToCourse(teacher: Teacher, course: Course): School = ???
+      def setTeacherToCourse(teacher: Teacher, course: Course): School = school match
+        case SchoolImpl(s) => SchoolImpl(s.remove(s.find(
+            _ match {case TeacherInfo(n, _) if n == teacher => true; case _ => false}).orElse(TeacherInfo("", Nil()))
+          ).add(s.find(
+            _ match {case TeacherInfo(n, _) if n == teacher => true; case _ => false}).orElse(TeacherInfo("", Nil()))
+            match {case TeacherInfo(n, c) => TeacherInfo(n, c.add(course))}
+          )
+        )
       def coursesOfATeacher(teacher: Teacher): Sequence[Course] = ???
       def hasTeacher(name: String): Boolean = ???
       def hasCourse(name: String): Boolean = ???
