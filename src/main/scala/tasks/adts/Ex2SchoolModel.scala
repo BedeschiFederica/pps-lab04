@@ -131,16 +131,16 @@ object SchoolModel:
       def courses: Sequence[String] = school match
         case SchoolImpl(s) => s.flatMap{case TeacherInfo(_, c) => c}
       def teachers: Sequence[String] = school match
-        case SchoolImpl(s) => s.map{case TeacherInfo(n, _) => println(n); n}
-      def setTeacherToCourse(teacher: Teacher, course: Course): School =
-        school match
-          case SchoolImpl(s) => SchoolImpl(s.remove(get(s, teacher)).add(
-            get(s, teacher) match {case TeacherInfo(_, c) => TeacherInfo(teacher, c.add(course))}))
+        case SchoolImpl(s) => s.map{case TeacherInfo(n, _) => n}
+      def setTeacherToCourse(teacher: Teacher, course: Course): School = school match
+        case SchoolImpl(s) => SchoolImpl(s.remove(get(s, teacher)).add(
+          get(s, teacher) match {case TeacherInfo(_, c) => TeacherInfo(teacher, c.add(course))}))
       def coursesOfATeacher(teacher: Teacher): Sequence[Course] = school match
         case SchoolImpl(s) => get(s, teacher) match {case TeacherInfo(_, c) => c}
       def hasTeacher(name: String): Boolean = school match
         case SchoolImpl(s) => !find(s, teacher(name)).isEmpty()
       def hasCourse(name: String): Boolean = !school.courses.find(_ == name).isEmpty()
+
 @main def examples(): Unit =
   import SchoolModel.BasicSchoolModule.*
   val school = emptySchool
