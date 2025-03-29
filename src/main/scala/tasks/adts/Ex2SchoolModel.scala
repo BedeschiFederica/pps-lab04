@@ -122,18 +122,20 @@ object SchoolModel:
     def course(name: String): Course = name
     def emptySchool: School = SchoolImpl(nil())
 
+    private def find(s: Sequence[TeacherInfo], t: Teacher): TeacherInfo =
+      s.find{case TeacherInfo(n, _) if n == t => true; case _ => false}.orElse(TeacherInfo("", Nil()))
+
     extension (school: School)
       def courses: Sequence[String] = school match
         case SchoolImpl(s) => s.flatMap{case TeacherInfo(_, c) => c}
       def teachers: Sequence[String] = school match
         case SchoolImpl(s) => s.map{case TeacherInfo(n, _) => println(n); n}
       def setTeacherToCourse(teacher: Teacher, course: Course): School =
-        def find(s: Sequence[TeacherInfo], t: Teacher): TeacherInfo =
-          s.find{case TeacherInfo(n, _) if n == teacher => true; case _ => false}.orElse(TeacherInfo("", Nil()))
         school match
           case SchoolImpl(s) => SchoolImpl(s.remove(find(s, teacher)).add(
             find(s, teacher) match {case TeacherInfo(_, c) => TeacherInfo(teacher, c.add(course))}))
-      def coursesOfATeacher(teacher: Teacher): Sequence[Course] = ???
+      def coursesOfATeacher(teacher: Teacher): Sequence[Course] = school match
+        case SchoolImpl(s) => find(s, teacher) match {case TeacherInfo(_, c) => c}
       def hasTeacher(name: String): Boolean = ???
       def hasCourse(name: String): Boolean = ???
 @main def examples(): Unit =

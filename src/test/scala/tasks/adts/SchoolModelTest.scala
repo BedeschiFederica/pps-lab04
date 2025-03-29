@@ -24,3 +24,6 @@ class SchoolModelTest:
 
   @Test def testTeachers(): Unit =
     assertEquals(Cons("John", Nil()), school3.teachers)
+
+  @Test def testCoursesOfATeacher(): Unit =
+    assertEquals(Cons("Math", Cons("Italian", Nil())), school3.coursesOfATeacher(john))
