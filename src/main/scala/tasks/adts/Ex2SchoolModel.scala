@@ -140,7 +140,7 @@ object SchoolModel:
         case SchoolImpl(s) => get(s, teacher) match {case TeacherInfo(_, c) => c}
       def hasTeacher(name: String): Boolean = school match
         case SchoolImpl(s) => !find(s, teacher(name)).isEmpty()
-      def hasCourse(name: String): Boolean = ???
+      def hasCourse(name: String): Boolean = !school.courses.find(_ == name).isEmpty()
 @main def examples(): Unit =
   import SchoolModel.BasicSchoolModule.*
   val school = emptySchool

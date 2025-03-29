@@ -31,3 +31,8 @@ class SchoolModelTest:
   @Test def testHasTeacher(): Unit =
     assertTrue(school3.hasTeacher("John"))
     assertFalse(school3.hasTeacher("Jeff"))
+
+  @Test def testHasCourse(): Unit =
+    assertTrue(school3.hasCourse("Math"))
+    assertTrue(school3.hasCourse("Italian"))
+    assertFalse(school3.hasCourse("Science"))
