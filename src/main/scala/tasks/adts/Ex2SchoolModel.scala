@@ -124,7 +124,7 @@ object SchoolModel:
 
     extension (school: School)
       def courses: Sequence[String] = school match
-        case SchoolImpl(s) => s.flatMap(_ match {case TeacherInfo(_, c) => c})
+        case SchoolImpl(s) => s.flatMap{case TeacherInfo(_, c) => c}
       def teachers: Sequence[String] = ???
       def setTeacherToCourse(teacher: Teacher, course: Course): School =
         def find(s: Sequence[TeacherInfo], t: Teacher): TeacherInfo =
