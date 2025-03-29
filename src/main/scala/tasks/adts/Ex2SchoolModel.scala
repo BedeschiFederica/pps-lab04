@@ -125,13 +125,14 @@ object SchoolModel:
     extension (school: School)
       def courses: Sequence[String] = school match
         case SchoolImpl(s) => s.flatMap{case TeacherInfo(_, c) => c}
-      def teachers: Sequence[String] = ???
+      def teachers: Sequence[String] = school match
+        case SchoolImpl(s) => s.map{case TeacherInfo(n, _) => println(n); n}
       def setTeacherToCourse(teacher: Teacher, course: Course): School =
         def find(s: Sequence[TeacherInfo], t: Teacher): TeacherInfo =
           s.find{case TeacherInfo(n, _) if n == teacher => true; case _ => false}.orElse(TeacherInfo("", Nil()))
         school match
           case SchoolImpl(s) => SchoolImpl(s.remove(find(s, teacher)).add(
-            find(s, teacher) match {case TeacherInfo(n, c) => TeacherInfo(n, c.add(course))}))
+            find(s, teacher) match {case TeacherInfo(_, c) => TeacherInfo(teacher, c.add(course))}))
       def coursesOfATeacher(teacher: Teacher): Sequence[Course] = ???
       def hasTeacher(name: String): Boolean = ???
       def hasCourse(name: String): Boolean = ???
