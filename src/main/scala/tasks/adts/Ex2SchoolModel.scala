@@ -122,8 +122,10 @@ object SchoolModel:
     def course(name: String): Course = name
     def emptySchool: School = SchoolImpl(nil())
 
-    private def find(s: Sequence[TeacherInfo], t: Teacher): TeacherInfo =
-      s.find{case TeacherInfo(n, _) if n == t => true; case _ => false}.orElse(TeacherInfo("", Nil()))
+    private def find(s: Sequence[TeacherInfo], t: Teacher): Optional[TeacherInfo] =
+      s.find{case TeacherInfo(n, _) if n == t => true; case _ => false}
+    private def get(s: Sequence[TeacherInfo], t: Teacher): TeacherInfo =
+      find(s, t).orElse(TeacherInfo("", Nil()))
 
     extension (school: School)
       def courses: Sequence[String] = school match
@@ -132,11 +134,12 @@ object SchoolModel:
         case SchoolImpl(s) => s.map{case TeacherInfo(n, _) => println(n); n}
       def setTeacherToCourse(teacher: Teacher, course: Course): School =
         school match
-          case SchoolImpl(s) => SchoolImpl(s.remove(find(s, teacher)).add(
-            find(s, teacher) match {case TeacherInfo(_, c) => TeacherInfo(teacher, c.add(course))}))
+          case SchoolImpl(s) => SchoolImpl(s.remove(get(s, teacher)).add(
+            get(s, teacher) match {case TeacherInfo(_, c) => TeacherInfo(teacher, c.add(course))}))
       def coursesOfATeacher(teacher: Teacher): Sequence[Course] = school match
-        case SchoolImpl(s) => find(s, teacher) match {case TeacherInfo(_, c) => c}
-      def hasTeacher(name: String): Boolean = ???
+        case SchoolImpl(s) => get(s, teacher) match {case TeacherInfo(_, c) => c}
+      def hasTeacher(name: String): Boolean = school match
+        case SchoolImpl(s) => !find(s, teacher(name)).isEmpty()
       def hasCourse(name: String): Boolean = ???
 @main def examples(): Unit =
   import SchoolModel.BasicSchoolModule.*
