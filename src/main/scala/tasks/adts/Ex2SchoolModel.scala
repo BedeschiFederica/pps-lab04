@@ -1,7 +1,10 @@
 package tasks.adts
 import u03.extensionmethods.Optionals.*
+import Optional.*
 import u03.extensionmethods.Sequences.*
 import Sequence.*
+
+import scala.annotation.tailrec
 
 /*  Exercise 2: 
  *  Implement the below trait, and write a meaningful test.
@@ -111,6 +114,7 @@ object SchoolModel:
        *
        */
       def hasCourse(name: String): Boolean
+
   object BasicSchoolModule extends SchoolModule:
     private case class SchoolImpl(teacherInfos: Sequence[TeacherInfo])
     private case class TeacherInfo(name: String, course: Sequence[Course])
@@ -121,6 +125,22 @@ object SchoolModel:
     def teacher(name: String): Teacher = name
     def course(name: String): Course = name
     def emptySchool: School = SchoolImpl(nil())
+
+    // new methods for Sequence
+    extension [A](l: Sequence[A])
+      def add(elem: A): Sequence[A] =
+        l.concat(cons(elem, nil()))
+
+      def remove(elem: A): Sequence[A] = l match
+        case Cons(h, t) if h == elem => t.remove(elem)
+        case Cons(h, t) => cons(h, t.remove(elem))
+        case _ => Nil()
+
+      @tailrec
+      def find(pred: A => Boolean): Optional[A] = l match
+        case Cons(h, _) if pred(h) => Just(h)
+        case Cons(_, t) => t.find(pred)
+        case _ => None()
 
     private def find(s: Sequence[TeacherInfo], t: Teacher): Optional[TeacherInfo] =
       s.find{case TeacherInfo(n, _) if n == t => true; case _ => false}

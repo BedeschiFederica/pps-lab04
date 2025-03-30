@@ -39,21 +39,6 @@ object Sequences:
         case Cons(h, t) => Cons(h, t.concat(other))
         case Nil()      => other
 
-      def add(elem: A): Sequence[A] =
-        l.concat(cons(elem, nil()))
-
-      def remove(elem: A): Sequence[A] = l match
-        case Cons(h, t) if h == elem => t.remove(elem)
-        case Cons(h, t) => cons(h, t.remove(elem))
-        case _ => Nil()
-
-      @tailrec
-      def find(pred: A => Boolean): Optional[A] = l match
-        case Cons(h, _) if pred(h) => Just(h)
-        case Cons(_, t) => t.find(pred)
-        case _ => None()
-    
-
     def of[A](n: Int, a: A): Sequence[A] =
       if (n == 0) then Nil[A]() else Cons(a, of(n - 1, a))
 
